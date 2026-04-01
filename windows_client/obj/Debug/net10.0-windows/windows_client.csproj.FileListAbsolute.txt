@@ -1,0 +1,15 @@
+C:\Users\jaide\Documents\CodingProjects\manual-sync-clipboard\windows_client\bin\Debug\net10.0-windows\windows_client.exe
+C:\Users\jaide\Documents\CodingProjects\manual-sync-clipboard\windows_client\bin\Debug\net10.0-windows\windows_client.deps.json
+C:\Users\jaide\Documents\CodingProjects\manual-sync-clipboard\windows_client\bin\Debug\net10.0-windows\windows_client.runtimeconfig.json
+C:\Users\jaide\Documents\CodingProjects\manual-sync-clipboard\windows_client\bin\Debug\net10.0-windows\windows_client.dll
+C:\Users\jaide\Documents\CodingProjects\manual-sync-clipboard\windows_client\bin\Debug\net10.0-windows\windows_client.pdb
+C:\Users\jaide\Documents\CodingProjects\manual-sync-clipboard\windows_client\obj\Debug\net10.0-windows\windows_client.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\jaide\Documents\CodingProjects\manual-sync-clipboard\windows_client\obj\Debug\net10.0-windows\windows_client.AssemblyInfoInputs.cache
+C:\Users\jaide\Documents\CodingProjects\manual-sync-clipboard\windows_client\obj\Debug\net10.0-windows\windows_client.AssemblyInfo.cs
+C:\Users\jaide\Documents\CodingProjects\manual-sync-clipboard\windows_client\obj\Debug\net10.0-windows\windows_client.csproj.CoreCompileInputs.cache
+C:\Users\jaide\Documents\CodingProjects\manual-sync-clipboard\windows_client\obj\Debug\net10.0-windows\windows_client.sourcelink.json
+C:\Users\jaide\Documents\CodingProjects\manual-sync-clipboard\windows_client\obj\Debug\net10.0-windows\windows_client.dll
+C:\Users\jaide\Documents\CodingProjects\manual-sync-clipboard\windows_client\obj\Debug\net10.0-windows\refint\windows_client.dll
+C:\Users\jaide\Documents\CodingProjects\manual-sync-clipboard\windows_client\obj\Debug\net10.0-windows\windows_client.pdb
+C:\Users\jaide\Documents\CodingProjects\manual-sync-clipboard\windows_client\obj\Debug\net10.0-windows\windows_client.genruntimeconfig.cache
+C:\Users\jaide\Documents\CodingProjects\manual-sync-clipboard\windows_client\obj\Debug\net10.0-windows\ref\windows_client.dll
