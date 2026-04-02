@@ -81,8 +81,8 @@ class ClipboardSyncManager(
                 clipboardManager.setPrimaryClip(ClipData.newPlainText("Clipboard Sync", decoded))
                 return@withContext SyncResult.Success("Clipboard pulled from laptop.")
             }
-        } catch (_: IOException) {
-            SyncResult.Failure("Could not reach the laptop server.")
+        } catch (error: IOException) {
+            SyncResult.Failure(error.message ?: "Could not reach the laptop server.")
         } catch (_: SerializationException) {
             SyncResult.Failure("Laptop response was not valid clipboard JSON.")
         }
@@ -103,8 +103,8 @@ class ClipboardSyncManager(
                     SyncResult.Failure("Request failed with HTTP ${response.code}.")
                 }
             }
-        } catch (_: IOException) {
-            SyncResult.Failure("Could not reach the laptop server.")
+        } catch (error: IOException) {
+            SyncResult.Failure(error.message ?: "Could not reach the laptop server.")
         }
     }
 
