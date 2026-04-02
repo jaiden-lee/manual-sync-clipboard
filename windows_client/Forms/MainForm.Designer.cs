@@ -279,7 +279,8 @@ partial class MainForm
                 var success = await ServerService.StartServer(
                     ip: GetSelectedNetworkInterface()?.IpAddress ?? "",
                     port: portTextBox.Text,
-                    token: tokenTextBox.Text
+                    token: tokenTextBox.Text,
+                    form: this
                 ); // server now runs asynchronously
                 if (!success)
                 {
