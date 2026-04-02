@@ -4,6 +4,10 @@ namespace CustomForms;
 using System.Windows.Forms;
 using System.Drawing;
 using windows_client.Utils;
+using System.Net.NetworkInformation;
+using System.Linq;
+using windows_client.Services;
+using System;
 
 partial class MainForm
 {
@@ -22,7 +26,6 @@ partial class MainForm
     private CheckBox showTokenCheckBox = null!;
     private Label statusCaptionLabel = null!;
     private Label statusValueLabel = null!;
-    private Button saveButton = null!;
     private Button startServerButton = null!;
     private readonly Color bgMain = Color.FromArgb(20, 20, 20);
     private readonly Color bgCard = Color.FromArgb(30, 30, 30);
@@ -109,6 +112,24 @@ partial class MainForm
         }
 
         base.OnFormClosing(e);
+    }
+
+    private bool CanStartServer()
+    {
+            bool canStart = !string.IsNullOrEmpty(portTextBox.Text) && int.TryParse(portTextBox.Text, out int port) && port > 0 && port <= 65535;
+            // token must not be empty too
+            canStart = canStart && !string.IsNullOrEmpty(tokenTextBox.Text);
+            return canStart;
+    }
+
+    private void StopServer()
+    {
+        ServerService.isRunning = false;
+        statusValueLabel.Text = "Stopped";
+        startServerButton.Text = "Start";
+        bindAddressComboBox.Enabled = true;
+        portTextBox.Enabled = true;
+        tokenTextBox.Enabled = true;
     }
 
     private void InitializeUi()
@@ -229,28 +250,48 @@ partial class MainForm
             Location = new Point(78, 280)
         };
 
-        saveButton = CreateButton(
-            text: "Save",
-            x: 268,
-            y: 272,
-            width: 76,
-            isAccent: false
-        );
-        saveButton.Click += (_, _) =>
-        {
-            statusValueLabel.Text = "Saved";
-        };
-
         startServerButton = CreateButton(
             text: "Start Server",
-            x: 352,
+            x: 268,
             y: 272,
             width: 76,
             isAccent: true
         );
-        startServerButton.Click += (_, _) =>
+        startServerButton.Click += async (_, _) =>
         {
-            statusValueLabel.Text = "Running";
+            if (!ServerService.isRunning)
+            {
+                if (!CanStartServer())
+                {
+                    MessageBox.Show("Please enter a valid port number (1-65535) and a non-empty API token.", "Invalid Input", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                ServerService.isRunning = true;
+                statusValueLabel.Text = "Running";
+                startServerButton.Text = "Stop";
+                bindAddressComboBox.Enabled = false;
+                portTextBox.Enabled = false;
+                tokenTextBox.Enabled = false;
+
+                // start server in background
+                // if it fails, then we have to stop
+                var success = await ServerService.StartServer(
+                    ip: GetSelectedNetworkInterface()?.IpAddress ?? "",
+                    port: portTextBox.Text,
+                    token: tokenTextBox.Text
+                ); // server now runs asynchronously
+                if (!success)
+                {
+                    MessageBox.Show("Failed to start server. Please check if the port is already in use or if you have the necessary permissions.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    StopServer(); 
+                }
+                // start async just starts it, but doesn't keep blocking afterwards
+                // so no need to handle the True case, just do nothing
+            } else {
+                StopServer();
+                await ServerService.ShutdownServer(); // shutdown server asynchronously, but we don't need to wait for it to finish
+            }
         };
 
         Controls.Add(titleLabel);
@@ -263,7 +304,6 @@ partial class MainForm
         Controls.Add(showTokenCheckBox);
         Controls.Add(statusCaptionLabel);
         Controls.Add(statusValueLabel);
-        Controls.Add(saveButton);
         Controls.Add(startServerButton);
 
         ResumeLayout(false);
