@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using System.Windows.Forms;
 
 
+
 public class ServerService
 {
     public static bool isRunning = false;
@@ -59,9 +60,30 @@ public class ServerService
             });
 
 
-            app.MapPost("/clipboard", () =>
+            app.MapPost("/clipboard", (ClipboardData data, HttpContext context) =>
             {
+                var authHeader = context.Request.Headers["Authorization"].ToString();
+                if (authHeader != $"Bearer {token}")
+                {
+                    return Results.Json(
+                        new { error = "Unauthorized" },
+                        statusCode: 401
+                    );
+                }
                 
+                if (data.kind == "text" && data.mime == "text/plain")
+                {
+                    byte[] clipboardBytes = System.Convert.FromBase64String(data.data_base64);
+                    string clipboard = System.Text.Encoding.UTF8.GetString(clipboardBytes);
+                    form.Invoke(() =>
+                    {
+                        Clipboard.SetText(clipboard);
+                    });
+                }
+                return Results.Json(
+                    new { status = "success" },
+                    statusCode: 200
+                );
             });
 
             await app.StartAsync(); // will immediately throw error if failed
@@ -85,3 +107,5 @@ public class ServerService
     }
 
 }
+
+public record ClipboardData(string kind, string mime, string data_base64);
