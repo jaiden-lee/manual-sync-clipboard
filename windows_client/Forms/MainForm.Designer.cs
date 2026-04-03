@@ -14,6 +14,7 @@ partial class MainForm
     private System.ComponentModel.IContainer components = null;
 
     private NotifyIcon trayIcon;
+    private Button refreshButton = null!;
     private ContextMenuStrip trayMenu;
     private bool allowExit = false;
     private Label titleLabel = null!;
@@ -130,6 +131,26 @@ partial class MainForm
         bindAddressComboBox.Enabled = true;
         portTextBox.Enabled = true;
         tokenTextBox.Enabled = true;
+        refreshButton.Enabled = true;
+    }
+
+    private void RefreshInterfaceCombobox()
+    {
+        var nics = windows_client.Utils.NetworkInterfaceOption.GetAvailableInterfaces();
+        bindAddressComboBox.Items.Clear();
+        if (nics.Count == 0)
+        {
+            bindAddressComboBox.Items.Add("no interfaces available");
+            bindAddressComboBox.SelectedIndex = 0;
+        }
+        else
+        {
+            foreach (var nic in nics)
+            {
+                bindAddressComboBox.Items.Add(nic);
+            }
+            bindAddressComboBox.SelectedIndex = 0;
+        }
     }
 
     private void InitializeUi()
@@ -165,20 +186,18 @@ partial class MainForm
         };
 
         // Placeholder items for now
-        var nics = windows_client.Utils.NetworkInterfaceOption.GetAvailableInterfaces();
-        if (nics.Count == 0)
-        {
-            bindAddressComboBox.Items.Add("no interfaces available");
-            
-        } else
-        {
-            foreach (var nic in nics)
-            {
-                bindAddressComboBox.Items.Add(nic);
-            }
-        }
-        bindAddressComboBox.SelectedIndex = 0;
-        
+        RefreshInterfaceCombobox();
+
+        // add a refresh button next to the combobox to refresh the list of interfaces
+        refreshButton = CreateButton(
+            text: "Refresh",
+            x: 436,
+            y: 92,
+            width: 76,
+            isAccent: false
+        );
+        refreshButton.Click += (_, _) => RefreshInterfaceCombobox();
+        Controls.Add(refreshButton);
 
         portLabel = new Label
         {
@@ -273,6 +292,7 @@ partial class MainForm
                 bindAddressComboBox.Enabled = false;
                 portTextBox.Enabled = false;
                 tokenTextBox.Enabled = false;
+                refreshButton.Enabled = false;
 
                 // start server in background
                 // if it fails, then we have to stop
