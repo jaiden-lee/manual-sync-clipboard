@@ -100,6 +100,15 @@ public class ServerService
                     {
                         Clipboard.SetText(clipboard);
                     });
+                } else if (data.kind == "image")
+                {
+                    byte[] imageBytes = System.Convert.FromBase64String(data.data_base64);
+                    using var ms = new System.IO.MemoryStream(imageBytes);
+                    using var image = System.Drawing.Image.FromStream(ms);
+                    form.Invoke(() =>
+                    {
+                        Clipboard.SetImage(image);
+                    });
                 }
                 return Results.Json(
                     new { status = "success" },
