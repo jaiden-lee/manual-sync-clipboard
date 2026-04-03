@@ -26,6 +26,15 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".ui.PushClipboardActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:finishOnTaskLaunch="true"
+            android:launchMode="singleTop"
+            android:taskAffinity=""
+            android:theme="@style/Theme.ClipboardSync.PushOverlay" />
+
         <service
             android:name=".tile.PullTileService"
             android:enabled="true"
