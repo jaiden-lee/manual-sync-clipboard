@@ -38,6 +38,9 @@ public class ServerService
                 }
 
                 string result = "";
+                string kind = "text";
+                string mime = "text/plain";
+
                 // clipboard can only run on sta thread; server runs on background thread
                 form.Invoke(() =>
                 {
@@ -46,13 +49,31 @@ public class ServerService
                         string clipboard = Clipboard.GetText();
                         byte[] clipboardBytes = System.Text.Encoding.UTF8.GetBytes(clipboard);
                         result = System.Convert.ToBase64String(clipboardBytes);
+                    } else if (Clipboard.ContainsImage())
+                    {
+                        using System.Drawing.Image? image = Clipboard.GetImage();
+                        // auto dispose of image after using; prevents memory leak
+                        if (image != null)
+                        {
+                            // always save the image as PNG
+                            // save in RAM with memorystream; acts as in RAM file
+                            using var ms = new System.IO.MemoryStream();
+                            // inline using cleans up with Dispose
+                            image.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                            // ms is now a file, so now we converted it to PNG format
+                            byte[] imageBytes = ms.ToArray();
+                            result = System.Convert.ToBase64String(imageBytes);
+
+                            kind = "image";
+                            mime = "image/png";
+                        }
                     }
                 });
 
                 return Results.Json(
                     new {
-                        kind = "text",
-                        mime = "text/plain",
+                        kind = kind, // simplify memeber name
+                        mime = mime,
                         data_base64 = result
                     },
                     statusCode: 200
